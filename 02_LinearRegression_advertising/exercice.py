@@ -56,6 +56,27 @@ rmse = np.sqrt(mse)
 mae = mean_absolute_error(y_test, y_pred)
 mape = mean_absolute_percentage_error(y_test, y_pred) * 100
 
+print(f"MSE  : {mse:.4f}")
+print(f"RMSE : {rmse:.4f}")
+print(f"MAE  : {mae:.4f}")
+print(f"MAPE : {mape:.2f}%\n\n")
+
+# add an interaction term to capture potential
+# synergy between TV and radio budgets (their combined effect may be
+# stronger than the sum of their individual effects)
+ads["tv_x_radio"] = ads["tv"] * ads["radio"]
+X = ads[["tv", "radio", "tv_x_radio"]]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20, random_state=42)
+reg_final2 = LinearRegression()
+reg_final2.fit(X_train, y_train)
+y_pred = reg_final2.predict(X_test)
+
+# Evaluate the interaction model the same way, to compare directly
+# against the model without the interaction term
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)  
+mae = mean_absolute_error(y_test, y_pred)
+mape = mean_absolute_percentage_error(y_test, y_pred) * 100
 
 print(f"MSE  : {mse:.4f}")
 print(f"RMSE : {rmse:.4f}")
